@@ -214,14 +214,15 @@ class AudioHandler : public CefAudioHandler
 
     GST_OBJECT_LOCK (mElement);
 
+    static int64_t offset = 0;
     if (!GST_CLOCK_TIME_IS_VALID (mCurrentTime)) {
-      mCurrentTime = gst_util_uint64_scale (mElement->n_frames,
-          mElement->vinfo.fps_d * GST_SECOND, mElement->vinfo.fps_n);
+      offset = gst_util_uint64_scale (mElement->n_frames,
+                                      mElement->vinfo.fps_d * GST_SECOND, mElement->vinfo.fps_n);
+      mCurrentTime = pts;
     }
 
-    GST_BUFFER_PTS (buf) = mCurrentTime;
+    GST_BUFFER_PTS (buf) = offset + ((pts - mCurrentTime) * GST_MSECOND);
     GST_BUFFER_DURATION (buf) = gst_util_uint64_scale (frames, GST_SECOND, mRate);
-    mCurrentTime += GST_BUFFER_DURATION (buf);
 
     if (!mElement->audio_buffers) {
       mElement->audio_buffers = gst_buffer_list_new();
