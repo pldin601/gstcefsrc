@@ -184,6 +184,8 @@ class AudioHandler : public CefAudioHandler
     mChannels = channels;
     mCurrentTime = GST_CLOCK_TIME_NONE;
 
+    GST_WARNING_OBJECT (mElement, "Audio stream started");
+
     GST_OBJECT_LOCK (mElement);
     mElement->audio_events = g_list_append (mElement->audio_events, event);
     GST_OBJECT_UNLOCK (mElement);
@@ -236,6 +238,7 @@ class AudioHandler : public CefAudioHandler
 
   void OnAudioStreamStopped(CefRefPtr<CefBrowser> browser) override
   {
+    GST_WARNING_OBJECT (mElement, "Audio stream stopped");
   }
 
   void OnAudioStreamError(CefRefPtr<CefBrowser> browser,
