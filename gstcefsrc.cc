@@ -210,6 +210,10 @@ class AudioHandler : public CefAudioHandler
         memcpy (info.data + j * 4 * mChannels + i * 4, &cdata[j], 4);
       }
     }
+    // Write all audio data to the file
+    FILE *f = fopen("audio.raw", "a");
+    fwrite(info.data, info.size, 1, f);
+    fclose(f);
     gst_buffer_unmap (buf, &info);
 
     GST_OBJECT_LOCK (mElement);
